@@ -1,0 +1,1 @@
+docker compose run --rm openlitespeed /bin/bash

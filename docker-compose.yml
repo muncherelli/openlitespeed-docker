@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  openlitespeed:
+    build: .
+    container_name: openlitespeed
+    ports:
+      - 7080:7080
+      - 8000:8000

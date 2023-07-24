@@ -194,17 +194,8 @@
   </virtualHostList>
   <listenerList>
     <listener>
-      <name>HTTPS</name>
-      <address>*:443</address>
-      <secure>1</secure>
-      <vhostMapList>
-      </vhostMapList>
-      <keyFile>$SERVER_ROOT/admin/conf/webadmin.key</keyFile>
-      <certFile>$SERVER_ROOT/admin/conf/webadmin.crt</certFile>
-    </listener>
-    <listener>
       <name>HTTP</name>
-      <address>*:80</address>
+      <address>*:8000</address>
       <secure>0</secure>
       <vhostMapList>
       </vhostMapList>

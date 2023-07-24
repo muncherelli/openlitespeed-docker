@@ -1,19 +1,12 @@
 #!/usr/bin/env bash
 echo "listener HTTP {
-  address                 *:80
+  address                 *:8000
   secure                  0
-}
-
-listener HTTPS {
-  address                 *:443
-  secure                  1
-  keyFile                 /usr/local/lsws/admin/conf/webadmin.key
-  certFile                /usr/local/lsws/admin/conf/webadmin.crt
 }
 
 vhTemplate docker {
   templateFile            conf/templates/docker.conf
-  listeners               HTTP, HTTPS
+  listeners               HTTP
   note                    docker
 
   member localhost {
