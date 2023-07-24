@@ -4,5 +4,6 @@ This is a Docker image for [OpenLiteSpeed](https://openlitespeed.org/), the Open
 
 To Do:
 - Use debian:bullseye-slim as base image instead of ubuntu:22.04
-- Customize the configuration to allow for multple websites to be hosted
-- Automated deployment to Docker Hub- Customize the configuration to allow for hosting multple sites
+- Allow images for both x86-64 and aarch64 to be built
+- Customize the configuration to allow for hosting multple sites
+- Automated deployment to Docker Hub when new PHP module versions are released
