@@ -1,5 +1,4 @@
 FROM docker.io/debian:bullseye-slim
-ARG ARCH=aarch64
 ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=lsphp82
 
@@ -13,7 +12,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /tmp/ols
-RUN wget -qO- https://github.com/litespeedtech/openlitespeed/releases/download/v${OPENLITESPEED_VERSION}/openlitespeed-${OPENLITESPEED_VERSION}-${ARCH}-linux.tgz | tar xvz -C /tmp/ols --strip-components=1 && \
+RUN wget -qO- https://github.com/litespeedtech/openlitespeed/releases/download/v${OPENLITESPEED_VERSION}/openlitespeed-${OPENLITESPEED_VERSION}-$(uname -m)-linux.tgz | tar xvz -C /tmp/ols --strip-components=1 && \
 	cd /tmp/ols && ./install.sh && rm -rf /tmp/ols && echo 'cloud-docker' > /usr/local/lsws/PLAT
 
 RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg
