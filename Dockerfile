@@ -40,7 +40,7 @@ RUN if [ ! -e /etc/apt/trusted.gpg.d/lst_debian_repo.gpg ]; then \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common lsphp${PHP_VERSION//./}-mysql lsphp${PHP_VERSION//./}-opcache \
-    lsphp${PHP_VERSION//./}-curl lsphp${PHP_VERSION//./}-imagick lsphp${PHP_VERSION//./}-redis lsphp${PHP_VERSION//./}-intl
+    lsphp${PHP_VERSION//./}-curl lsphp${PHP_VERSION//./}-imap lsphp${PHP_VERSION//./}-sqlite3 lsphp${PHP_VERSION//./}-sqlite3 lsphp${PHP_VERSION//./}-redis lsphp${PHP_VERSION//./}-intl
 
 # Install PHP modules for PHP 7
 RUN if [[ $PHP_VERSION == 7* ]]; then apt-get install lsphp${PHP_VERSION//./}-json -y; fi && \
