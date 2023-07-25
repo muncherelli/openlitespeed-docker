@@ -2,6 +2,7 @@ FROM docker.io/debian:bullseye-slim
 ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=lsphp82
 
+# Update system packages and install necessary dependencies
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     ca-certificates wget curl cron tzdata procps && \
