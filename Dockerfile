@@ -15,8 +15,8 @@ RUN apt-get update && \
 RUN mkdir -p /tmp/openlitespeed-release && \
     wget -qO- https://github.com/litespeedtech/openlitespeed/releases/download/v${OPENLITESPEED_VERSION}/openlitespeed-${OPENLITESPEED_VERSION}-$(uname -m)-linux.tgz | tar xvz -C /tmp/openlitespeed-release --strip-components=1 && \
     cd /tmp/openlitespeed-release && \
-    sed -i '/install_lsphp7_debian()/{N;N;N;d}' ./install.sh && \
-    sed -i '/install_lsphp7_debian()/a \    :' ./install.sh && \
+    sed -i '/install_lsphp7_debian()/{N;N;N;d}' ./_in.sh && \
+    sed -i '/install_lsphp7_debian()/a \    :' ./_in.sh && \
     ./install.sh && \
     rm -rf /tmp/openlitespeed-release && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT
