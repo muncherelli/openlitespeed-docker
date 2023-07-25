@@ -1,6 +1,9 @@
 FROM docker.io/debian:bullseye-slim
 ARG OPENLITESPEED_VERSION=1.7.17
-ARG PHP_VERSION=lsphp82
+ARG PHP_VERSION=8.2
+
+# Use bash shell
+SHELL ["/bin/bash", "-c"]
 
 # Update system packages and install necessary dependencies
 RUN apt-get update && \
@@ -33,7 +36,7 @@ RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech
     $PHP_VERSION-curl $PHP_VERSION-imagick $PHP_VERSION-redis $PHP_VERSION-intl
 
 # Install PHP modules for PHP 7
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp7* ]]; then apt-get install $PHP_VERSION-json -y; fi"] && \
+RUN if [[ $PHP_VERSION == 7* ]]; then apt-get install lsphp${PHP_VERSION//./}-json -y; fi && \
     rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /usr/local/lsws/admin/misc/lsup.sh \
@@ -54,11 +57,11 @@ RUN /usr/local/lsws/bin/setup_docker.sh && rm /usr/local/lsws/bin/setup_docker.s
     cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/ && \
     cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/
 
-# Setup PHP
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp8* ]]; then ln -sf /usr/local/lsws/$PHP_VERSION/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp8; fi"] && \
-    ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp8* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp; fi"] && \
-    ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp7* ]]; then ln -sf /usr/local/lsws/$PHP_VERSION/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp7; fi"] && \
-    ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp7* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp7 /usr/local/lsws/fcgi-bin/lsphp; fi"]
+RUN if [[ $PHP_VERSION == 8* ]]; then ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp8; fi && \
+    if [[ $PHP_VERSION == 8* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp; fi && \
+    if [[ $PHP_VERSION == 7* ]]; then ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp7; fi && \
+    if [[ $PHP_VERSION == 7* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp7 /usr/local/lsws/fcgi-bin/lsphp; fi && \
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
