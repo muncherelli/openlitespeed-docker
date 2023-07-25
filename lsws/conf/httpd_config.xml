@@ -205,7 +205,7 @@
     <vhTemplate>
       <name>docker</name>
       <templateFile>$SERVER_ROOT/conf/templates/docker.xml</templateFile>
-      <listeners>HTTP, HTTPS</listeners>
+      <listeners>HTTP</listeners>
       <member>
         <vhName>localhost</vhName>
         <vhDomain>*, localhost</vhDomain>
