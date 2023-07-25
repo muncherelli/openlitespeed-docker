@@ -15,25 +15,32 @@ RUN apt-get update && \
     fi && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Openlitespeed and nullify php package install function from install.sh since we will install PHP separately
+# Install Openlitespeed and nullify php package install function from install.sh since we will likely install PHP separately
 RUN mkdir -p /tmp/openlitespeed-release && \
     wget -qO- https://github.com/litespeedtech/openlitespeed/releases/download/v${OPENLITESPEED_VERSION}/openlitespeed-${OPENLITESPEED_VERSION}-$(uname -m)-linux.tgz | tar xvz -C /tmp/openlitespeed-release --strip-components=1 && \
+    if [[ $PHP_VERSION != 7* ]]; then sed -i "s/^USE_LSPHP7=.*/USE_LSPHP7=no/" /tmp/openlitespeed-release/ols.conf; fi && \
+    sed -i "s/^LSPHPVER=.*/LSPHPVER=${PHP_VERSION//./}/" /tmp/openlitespeed-release/_in.sh && \
     cd /tmp/openlitespeed-release && \
-    sed -i '/install_lsphp7_debian()/{N;N;N;d}' ./_in.sh && \
-    sed -i '/install_lsphp7_debian()/a \    :' ./_in.sh && \
     ./install.sh && \
     rm -rf /tmp/openlitespeed-release && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT
 
-# Install PHP_VERSION and necessary PHP modules
-RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg && \
-    wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg && \
+# Ensure lsphp${PHP_VERSION//./} is installed and necessary PHP modules
+RUN if [ ! -e /etc/apt/trusted.gpg.d/lst_debian_repo.gpg ]; then \
+        wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg; \
+    fi && \
+    if [ ! -e /etc/apt/trusted.gpg.d/lst_repo.gpg ]; then \
+        wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg; \
+    fi && \
+    if [ -e /etc/apt/sources.list.d/lst_debian_repo.list ]; then \
+        rm /etc/apt/sources.list.d/lst_debian_repo.list; \
+    fi && \
     echo "deb http://rpms.litespeedtech.com/debian/ bullseye main" > /etc/apt/sources.list.d/lst_debian_repo.list && \
     echo "#deb http://rpms.litespeedtech.com/edge/debian/ bullseye main" >> /etc/apt/sources.list.d/lst_debian_repo.list && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    default-mysql-client $PHP_VERSION $PHP_VERSION-common $PHP_VERSION-mysql $PHP_VERSION-opcache \
-    $PHP_VERSION-curl $PHP_VERSION-imagick $PHP_VERSION-redis $PHP_VERSION-intl
+    default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common lsphp${PHP_VERSION//./}-mysql lsphp${PHP_VERSION//./}-opcache \
+    lsphp${PHP_VERSION//./}-curl lsphp${PHP_VERSION//./}-imagick lsphp${PHP_VERSION//./}-redis lsphp${PHP_VERSION//./}-intl
 
 # Install PHP modules for PHP 7
 RUN if [[ $PHP_VERSION == 7* ]]; then apt-get install lsphp${PHP_VERSION//./}-json -y; fi && \
