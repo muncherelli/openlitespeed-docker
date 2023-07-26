@@ -25,7 +25,7 @@ This container is intended to maintain compatibility and the internal container 
 - Implement SSL pass-through
 - Implement QUIC/HTTP3 pass-through
 - Automate deployment to Docker Hub upon release of updated PHP modules
-- Compatibility with CloudFlare tunnel (True Client IP)
+- CloudFlare True Client IP behind reverse proxy and tunnel support
 - Forward localhost ports to reverse proxied remote services, e.g. MySQL
 - Implement Bubblewrap for enhanced security
 - Per-tenant cgroup-style limits for CPU, memory, and disk I/O
