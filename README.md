@@ -3,6 +3,7 @@
 This repository hosts a user-maintained Docker image for [OpenLiteSpeed](https://openlitespeed.org/), the Open Source version of the highly optimized [LiteSpeed Web Server](https://www.litespeedtech.com/products/litespeed-web-server/overview). 
 
 ## Scope:
+
 This container is intended to maintain compatibility and the internal container directory structure of the official OpenLiteSpeed docker container. Ideal for both development and production environments, it is designed to be as lightweight as possible while still providing a rich feature set for modern applications. Additional features allow for easy install and maintenance of multiple websites.
 
 ## Achievements:
@@ -13,8 +14,8 @@ This container is intended to maintain compatibility and the internal container 
 
 ## Upcoming Improvements:
 
-- Simplify integration with load-balancers and reverse proxies like Traefik
 - Allow easy setup for multi-tenant web hosting
+- Enable .user.ini PHP configuration files
 - Provide comprehensive instructions for building and running the container
 
 ## Future Roadmap:
