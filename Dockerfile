@@ -15,7 +15,7 @@ RUN apt-get update && \
     fi && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Openlitespeed and nullify php package install function from install.sh since we will likely install PHP separately
+# Install Openlitespeed and attempt to nullify php package install function from install.sh since we will install PHP separately
 RUN mkdir -p /tmp/openlitespeed-release && \
     wget -qO- https://github.com/litespeedtech/openlitespeed/releases/download/v${OPENLITESPEED_VERSION}/openlitespeed-${OPENLITESPEED_VERSION}-$(uname -m)-linux.tgz | tar xvz -C /tmp/openlitespeed-release --strip-components=1 && \
     if [[ $PHP_VERSION != 7* ]]; then sed -i "s/^USE_LSPHP7=.*/USE_LSPHP7=no/" /tmp/openlitespeed-release/ols.conf; fi && \
@@ -25,7 +25,7 @@ RUN mkdir -p /tmp/openlitespeed-release && \
     rm -rf /tmp/openlitespeed-release && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT
 
-# Ensure lsphp${PHP_VERSION//./} is installed and necessary PHP modules
+# Ensure lsphp${PHP_VERSION//./} and modules are installed
 RUN if [ ! -e /etc/apt/trusted.gpg.d/lst_debian_repo.gpg ]; then \
         wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg; \
     fi && \
