@@ -55,7 +55,6 @@ ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
 ADD openlitespeed/bin/setup_docker.sh /usr/local/lsws/bin/setup_docker.sh
-ADD openlitespeed/conf/httpd_config.xml /usr/local/lsws/conf/httpd_config.xml
 ADD openlitespeed/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
 
 # Setup docker and cleanup
@@ -73,4 +72,5 @@ RUN if [[ $PHP_VERSION == 8* ]]; then ln -sf /usr/local/lsws/lsphp${PHP_VERSION/
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
 WORKDIR /var/www/vhosts/
