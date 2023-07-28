@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 echo "listener HTTP {
-  address                 *:8000
+  address                 *:80
   secure                  0
 }
 

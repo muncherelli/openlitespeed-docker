@@ -6,4 +6,4 @@ services:
     container_name: openlitespeed
     ports:
       - 7080:7080
-      - 8000:8000
+      - 80:80

@@ -50,7 +50,7 @@ RUN wget -O /usr/local/lsws/admin/misc/lsup.sh \
     https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh && \
     chmod +x /usr/local/lsws/admin/misc/lsup.sh
 
-EXPOSE 7080 8000
+EXPOSE 7080 80
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
