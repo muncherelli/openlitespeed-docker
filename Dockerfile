@@ -59,14 +59,15 @@ ADD openlitespeed/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
 
 # Setup docker and cleanup
 RUN /usr/local/lsws/bin/setup_docker.sh && rm /usr/local/lsws/bin/setup_docker.sh && \
-    chown 999:999 /usr/local/lsws/conf -R  && \
+    chown 999:999 /usr/local/lsws/conf -R && \
+    mkdir -p /var/www/vhosts/_default/public && \
+    rm -rf /usr/local/lsws/Example && \
     cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/ && \
-    cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/
-
-RUN if [[ $PHP_VERSION == 8* ]]; then ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp8; fi && \
-    if [[ $PHP_VERSION == 8* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp; fi && \
-    if [[ $PHP_VERSION == 7* ]]; then ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp7; fi && \
-    if [[ $PHP_VERSION == 7* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp7 /usr/local/lsws/fcgi-bin/lsphp; fi && \
+    cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/ && \
+    sed -i -e '/virtualHost Example{/,/}/d' -e '/listener Default{/,/}/d' /usr/local/lsws/conf/httpd_config.conf && \
+    chown 1000:1000 /var/www/vhosts/_default/ -R && \
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} && \
+    ln -sf /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} /usr/local/lsws/fcgi-bin/lsphp && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php
 
 COPY entrypoint.sh /entrypoint.sh
