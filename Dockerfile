@@ -72,6 +72,7 @@ ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/dock
 # - symlink lsphp to lsphp${PHP_VERSION//./}
 # - symlink newly created lsphp${PHP_VERSION//./} to lsphp in fcgi-bin
 # - symlink php binary to /usr/bin/php
+# - create empty vhosts.env file
 ##
 RUN chown 999:999 /usr/local/lsws/conf -R && \
     mkdir -p /var/www/vhosts/_default/public && \
