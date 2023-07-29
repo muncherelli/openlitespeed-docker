@@ -38,7 +38,6 @@ RUN apt-get update && \
     if [[ $PHP_VERSION != 7* ]]; then sed -i "s/^USE_LSPHP7=.*/USE_LSPHP7=no/" /tmp/openlitespeed-release/ols.conf; fi && \
     sed -i "s/^LSPHPVER=.*/LSPHPVER=${PHP_VERSION//./}/" /tmp/openlitespeed-release/_in.sh && \
     cd /tmp/openlitespeed-release && \
-    rm -rf ./conf/templates/* && \
     ./install.sh && \
     rm -rf /tmp/openlitespeed-release && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT && \
@@ -55,12 +54,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     wget -O /usr/local/lsws/admin/misc/lsup.sh https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh && \
-    chmod +x /usr/local/lsws/admin/misc/lsup.sh
+    chmod +x /usr/local/lsws/admin/misc/lsup.sh && \
+    rm -rf /usr/local/lsws/conf/templates/*
 
 # Add configuration files
-ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
-ADD openlitespeed/bin/setup_docker.sh /usr/local/lsws/bin/setup_docker.sh
 ADD openlitespeed/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
+ADD openlitespeed/conf/httpd_config.conf /usr/local/lsws/conf/httpd_config.conf
+ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
 
 ##
 # Set Up Openlitespeed
@@ -73,8 +73,7 @@ ADD openlitespeed/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
 # - symlink newly created lsphp${PHP_VERSION//./} to lsphp in fcgi-bin
 # - symlink php binary to /usr/bin/php
 ##
-RUN /usr/local/lsws/bin/setup_docker.sh && rm /usr/local/lsws/bin/setup_docker.sh && \
-    chown 999:999 /usr/local/lsws/conf -R && \
+RUN chown 999:999 /usr/local/lsws/conf -R && \
     mkdir -p /var/www/vhosts/_default/public && \
     chown 1000:1000 /var/www/vhosts/_default/ -R && \
     rm -rf /usr/local/lsws/Example && \

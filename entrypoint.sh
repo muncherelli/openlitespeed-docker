@@ -18,7 +18,7 @@ function process_vhosts {
         return
     fi
     
-    # Delete the entire member block
+    # Delete the default member block
     sed -i '/member .* {/,/}/d' /usr/local/lsws/conf/httpd_config.conf
 
     # Delete any existing vhosts
