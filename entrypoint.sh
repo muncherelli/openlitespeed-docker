@@ -12,13 +12,22 @@ chown 999:1000 /usr/local/lsws/admin/conf -R
 # Function to process vhosts
 function process_vhosts {
     VHOSTS=$(cat /usr/local/lsws/conf/vhosts.env)
-    # Delete existing members
-    sed -i '/  member /d' /usr/local/lsws/conf/httpd.conf
+    
+    # Check if VHOSTS is empty, if so, skip the following steps
+    if [ -z "$VHOSTS" ]; then
+        return
+    fi
+    
+    # Delete the entire member block
+    sed -i '/member .* {/,/}/d' /usr/local/lsws/conf/httpd_config.conf
+
+    # Delete any existing vhosts
+    sed -i '/member .*/d' /usr/local/lsws/conf/httpd_config.conf
 
     # Add each vhost
     IFS=',' read -ra ADDR <<< "$VHOSTS"
     for i in "${ADDR[@]}"; do
-        sed -i "/vhTemplate docker {/a\  member $i" /usr/local/lsws/conf/httpd.conf
+        sed -i "/templateFile            conf\/templates\/docker.conf/i\  member $i {\n    vhDomain              *\n  }" /usr/local/lsws/conf/httpd_config.conf
     done
 
     # Restart server
@@ -28,14 +37,12 @@ function process_vhosts {
 # Monitor for changes in VHOSTS
 OPENLITESPEED_VHOSTS_ENV_LAST_HASH=""
 while true; do
-    if [ -s "/usr/local/lsws/conf/vhosts.env" ]; then
-        OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH=$(md5sum /usr/local/lsws/conf/vhosts.env | cut -d " " -f1)
-        if [ "$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH" != "$OPENLITESPEED_VHOSTS_ENV_LAST_HASH" ]; then
-            process_vhosts
-            OPENLITESPEED_VHOSTS_ENV_LAST_HASH=$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH
-        fi
+    OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH=$(cat /usr/local/lsws/conf/vhosts.env | md5sum | cut -d " " -f1)
+    if [ "$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH" != "$OPENLITESPEED_VHOSTS_ENV_LAST_HASH" ]; then
+        process_vhosts
+        OPENLITESPEED_VHOSTS_ENV_LAST_HASH=$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH
     fi
-    sleep 5
+    sleep 600
 done &
 
 /usr/local/lsws/bin/lswsctrl start
