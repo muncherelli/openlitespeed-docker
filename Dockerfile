@@ -82,7 +82,8 @@ RUN /usr/local/lsws/bin/setup_docker.sh && rm /usr/local/lsws/bin/setup_docker.s
     cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/ && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} && \
     ln -sf /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} /usr/local/lsws/fcgi-bin/lsphp && \
-    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php && \
+    touch /usr/local/lsws/conf/vhosts.env
 
 # Set Up Container
 EXPOSE 7080 80
