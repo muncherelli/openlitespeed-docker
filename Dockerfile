@@ -38,6 +38,7 @@ RUN apt-get update && \
     if [[ $PHP_VERSION != 7* ]]; then sed -i "s/^USE_LSPHP7=.*/USE_LSPHP7=no/" /tmp/openlitespeed-release/ols.conf; fi && \
     sed -i "s/^LSPHPVER=.*/LSPHPVER=${PHP_VERSION//./}/" /tmp/openlitespeed-release/_in.sh && \
     cd /tmp/openlitespeed-release && \
+    rm -rf ./conf/templates/* && \
     ./install.sh && \
     rm -rf /tmp/openlitespeed-release && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT && \
