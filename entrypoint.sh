@@ -42,7 +42,7 @@ while true; do
         process_vhosts
         OPENLITESPEED_VHOSTS_ENV_LAST_HASH=$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH
     fi
-    sleep 600
+    sleep 5
 done &
 
 /usr/local/lsws/bin/lswsctrl start
