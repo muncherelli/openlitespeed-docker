@@ -1,7 +1,7 @@
 FROM docker.io/debian:bullseye-slim
 ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=8.2
-ARG PHP_MODULES="curl intl imagick imap mysql opcache pgsql sqlite3 redis"
+ARG PHP_EXTENSIONS="curl,intl,imagick,imap,mysql,opcache,pgsql,sqlite3,redis"
 
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
@@ -49,7 +49,7 @@ RUN apt-get update && \
     echo "deb http://rpms.litespeedtech.com/debian/ bullseye main" > /etc/apt/sources.list.d/lst_debian_repo.list && \
     echo "#deb http://rpms.litespeedtech.com/edge/debian/ bullseye main" >> /etc/apt/sources.list.d/lst_debian_repo.list && \
     apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common $(for module in $PHP_MODULES; do echo -n "lsphp${PHP_VERSION//./}-$module "; done) && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common $(echo $PHP_EXTENSIONS | tr ',' '\n' | while read ext; do echo -n "lsphp${PHP_VERSION//./}-$ext "; done) && \
     if [[ $PHP_VERSION == 7* ]]; then DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends lsphp${PHP_VERSION//./}-json; fi && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
