@@ -4,17 +4,20 @@ This repository hosts a user-maintained Docker image for [OpenLiteSpeed](https:/
 
 ## Scope:
 
-This container is intended to maintain compatibility and the internal container directory structure of the official OpenLiteSpeed docker container. Ideal for both development and production environments, it is designed to be as lightweight as possible while still providing a rich feature set for modern applications. Additional features allow for easy install and maintenance of multiple websites.
+This container is intended to be a drop-in replacement for the official OpenLiteSpeed docker container. Ideal for both PHP development and production environments, it is designed to be as lightweight as possible while still providing a rich feature set for modern applications. Additional features allow for easy install and maintenance of multiple websites.
 
 ## Achievements:
 
 - Adopted Debian Slim as base image, replacing Ubuntu :white_check_mark:
 - Container supports native execution on x86_64 and aarch64 (Apple Silicon, Raspberry Pi) :white_check_mark:
-- Enhanced readability of the `PHP_VERSION` argument :white_check_mark:
+- Easy to use `PHP_VERSION` and `PHP_MODULES` ARGS for custom builds :white_check_mark:
 
 ## Upcoming Improvements:
 
 - Allow easy setup for multi-tenant web hosting
+- Add Composer
+- Launch on Docker Hub
+- Add separate build with support for Microsoft SQL Server (sqlsrv PHP module)
 - Enable .user.ini PHP configuration files
 - Provide comprehensive instructions for building and running the container
 
