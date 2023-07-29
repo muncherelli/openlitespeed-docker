@@ -9,6 +9,17 @@ fi
 chown 999:999 /usr/local/lsws/conf -R
 chown 999:1000 /usr/local/lsws/admin/conf -R
 
+# New function to check server and restart
+function check_server_and_restart {
+    while true; do
+        if /usr/local/lsws/bin/lswsctrl status | /bin/grep 'litespeed is running with PID *' > /dev/null; then
+            /usr/local/lsws/bin/lswsctrl restart
+            break
+        fi
+        sleep 5
+    done
+}
+
 # Function to process vhosts
 function process_vhosts {
     VHOSTS=$(cat /usr/local/lsws/conf/vhosts.env)
@@ -30,8 +41,8 @@ function process_vhosts {
         sed -i "/note                    docker/a\  member $i" /usr/local/lsws/conf/httpd_config.conf
     done
 
-    # Restart server
-    /usr/local/lsws/bin/lswsctrl restart
+    # Call function to check server status and restart
+    check_server_and_restart
 }
 
 # Monitor for changes in VHOSTS
