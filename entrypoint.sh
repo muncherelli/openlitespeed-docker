@@ -16,7 +16,7 @@ function check_server_and_restart {
             /usr/local/lsws/bin/lswsctrl restart
             break
         fi
-        sleep 5
+        sleep 1
     done
 }
 

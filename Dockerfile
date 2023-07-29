@@ -1,7 +1,7 @@
 FROM docker.io/debian:bullseye-slim
 ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=8.2
-ARG PHP_MODULES=curl intl imagick imap json mysql opcache pgsql sqlite3 redis
+ARG PHP_MODULES=curl intl imagick imap mysql opcache pgsql sqlite3 redis
 
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
@@ -28,8 +28,7 @@ SHELL ["/bin/bash", "-c"]
 # - Download lsup.sh script from GitHub and save it to /usr/local/lsws/admin/misc
 # - Make the downloaded script executable
 ##
-RUN if [[ $PHP_VERSION != 7* ]]; then PHP_MODULES=$(echo $PHP_MODULES | sed 's/json//g'); fi && \
-    apt-get update && \
+RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget curl cron tzdata procps && \
     if [ $(uname -m) = "aarch64" ]; then \
         apt-get install -y libatomic1; \
@@ -51,6 +50,7 @@ RUN if [[ $PHP_VERSION != 7* ]]; then PHP_MODULES=$(echo $PHP_MODULES | sed 's/j
     echo "#deb http://rpms.litespeedtech.com/edge/debian/ bullseye main" >> /etc/apt/sources.list.d/lst_debian_repo.list && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common $(for module in $PHP_MODULES; do echo -n "lsphp${PHP_VERSION//./}-$module "; done) && \
+    if [[ $PHP_VERSION == 7* ]]; then DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends lsphp${PHP_VERSION//./}-json; fi && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     wget -O /usr/local/lsws/admin/misc/lsup.sh https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh && \
