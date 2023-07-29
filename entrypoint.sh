@@ -28,8 +28,8 @@ function process_vhosts {
 # Monitor for changes in VHOSTS
 OPENLITESPEED_VHOSTS_ENV_LAST_HASH=""
 while true; do
-    if [ -f "/usr/local/lsws/conf/vhosts.env" ]; then
-        OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH=$(cat /usr/local/lsws/conf/vhosts.env | md5sum | cut -d " " -f1)
+    if [ -s "/usr/local/lsws/conf/vhosts.env" ]; then
+        OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH=$(md5sum /usr/local/lsws/conf/vhosts.env | cut -d " " -f1)
         if [ "$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH" != "$OPENLITESPEED_VHOSTS_ENV_LAST_HASH" ]; then
             process_vhosts
             OPENLITESPEED_VHOSTS_ENV_LAST_HASH=$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH
