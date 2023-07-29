@@ -27,7 +27,7 @@ function process_vhosts {
     # Add each vhost
     IFS=',' read -ra ADDR <<< "$VHOSTS"
     for i in "${ADDR[@]}"; do
-        sed -i "/templateFile            conf\/templates\/docker.conf/i\  member $i {\n    vhDomain              *\n  }" /usr/local/lsws/conf/httpd_config.conf
+        sed -i "/note                    docker/a\  member $i" /usr/local/lsws/conf/httpd_config.conf
     done
 
     # Restart server
