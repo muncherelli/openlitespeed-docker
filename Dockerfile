@@ -28,7 +28,8 @@ SHELL ["/bin/bash", "-c"]
 # - Download lsup.sh script from GitHub and save it to /usr/local/lsws/admin/misc
 # - Make the downloaded script executable
 ##
-RUN apt-get update && \
+RUN if [[ $PHP_VERSION != 7* ]]; then PHP_MODULES=$(echo $PHP_MODULES | sed 's/json//g'); fi && \
+    apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget curl cron tzdata procps && \
     if [ $(uname -m) = "aarch64" ]; then \
         apt-get install -y libatomic1; \
@@ -49,7 +50,6 @@ RUN apt-get update && \
     echo "deb http://rpms.litespeedtech.com/debian/ bullseye main" > /etc/apt/sources.list.d/lst_debian_repo.list && \
     echo "#deb http://rpms.litespeedtech.com/edge/debian/ bullseye main" >> /etc/apt/sources.list.d/lst_debian_repo.list && \
     apt-get update && \
-    if [[ $PHP_VERSION != 7* ]]; then PHP_MODULES=$(echo $PHP_MODULES | sed 's/json//g'); fi && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common $(for module in $PHP_MODULES; do echo -n "lsphp${PHP_VERSION//./}-$module "; done) && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -88,7 +88,6 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
 # Set Up Container
 EXPOSE 7080 80
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
-ENV VHOSTS=
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
