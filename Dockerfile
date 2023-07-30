@@ -1,7 +1,7 @@
 FROM docker.io/debian:bullseye-slim
 ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=8.2
-ARG PHP_EXTENSIONS="curl,intl,imagick,imap,mysql,opcache,pgsql,sqlite3,redis"
+ARG PHP_EXTENSIONS="curl,intl,imagick,imap,mysql,opcache,pgsql,sqlite3"
 
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
