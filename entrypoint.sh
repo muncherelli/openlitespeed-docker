@@ -1,5 +1,26 @@
 #!/bin/bash
 
+PHP_INI="/usr/local/lsws/lsphp${PHP_VERSION//./}/etc/php/${PHP_VERSION}/litespeed/php.ini"
+
+if [ -f $PHP_INI ]; then
+    # Substitute memory_limit value in php.ini with ENV variable
+    sed -i "s/^memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" $PHP_INI
+    # Substitute post_max_size value in php.ini with ENV variable
+    sed -i "s/^post_max_size = .*/post_max_size = ${PHP_POST_MAX_SIZE}/" $PHP_INI
+    # Substitute upload_max_filesize value in php.ini with ENV variable
+    sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}/" $PHP_INI
+    # Substitute max_input_time value in php.ini with ENV variable
+    sed -i "s/^max_input_time = .*/max_input_time = ${PHP_MAX_INPUT_TIME}/" $PHP_INI
+    # Substitute max_execution_time value in php.ini with ENV variable
+    sed -i "s/^max_execution_time = .*/max_execution_time = ${PHP_MAX_EXECUTION_TIME}/" $PHP_INI
+    # Substitute max_input_vars value in php.ini with ENV variable
+    if grep -q '^max_input_vars =' $PHP_INI; then
+        sed -i "s/^max_input_vars = .*/max_input_vars = ${PHP_MAX_INPUT_VARS}/" $PHP_INI
+    else
+        echo "max_input_vars = ${PHP_MAX_INPUT_VARS}" >> $PHP_INI
+    fi
+fi
+
 if [ -z "$(ls -A -- "/usr/local/lsws/conf/")" ]; then
     cp -R /usr/local/lsws/.conf/* /usr/local/lsws/conf/
 fi

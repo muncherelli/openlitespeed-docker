@@ -3,6 +3,14 @@ ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=8.2
 ARG PHP_EXTENSIONS="curl,intl,imagick,imap,mysql,opcache,pgsql,sqlite3,redis"
 
+# Set Up PHP configuration variables
+ENV PHP_MEMORY_LIMIT=512M
+ENV PHP_POST_MAX_SIZE=128M
+ENV PHP_UPLOAD_MAX_FILESIZE=128M
+ENV PHP_MAX_INPUT_TIME=300
+ENV PHP_MAX_EXECUTION_TIME=300
+ENV PHP_MAX_INPUT_VARS=2500
+
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
 
@@ -102,8 +110,11 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
 # Set Up Container
 EXPOSE 7080 80
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
+# do not modify php_version here, this is only to pass the value to entrypoint.sh
+ENV PHP_VERSION=${PHP_VERSION}
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
 
 WORKDIR /var/www/vhosts/
