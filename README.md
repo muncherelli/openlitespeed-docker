@@ -17,14 +17,13 @@ Upstream: Missing PHP Extensions in [LiteSpeed repository for Debian Bullseye](h
 - Adopted Debian Slim as base image, replacing Ubuntu :white_check_mark:
 - Container supports native execution on x86_64 and aarch64 (Apple Silicon, Raspberry Pi) :white_check_mark:
 - Easy to use `PHP_VERSION` and `PHP_MODULES` ARGS for custom builds :white_check_mark:
+- Allow easy setup for multi-tenant web hosting :white_check_mark:
+- Launch on Docker Hub :white_check_mark:
 
 ## Upcoming Improvements:
 
-- Allow easy setup for multi-tenant web hosting
 - Add Composer
-- Launch on Docker Hub
 - Add separate build with support for Microsoft SQL Server (sqlsrv PHP module)
-- Enable .user.ini PHP configuration files
 - Provide comprehensive instructions for building and running the container
 
 ## Future Roadmap:
@@ -33,7 +32,7 @@ Upstream: Missing PHP Extensions in [LiteSpeed repository for Debian Bullseye](h
 - Improve control over default website and error pages at webserver and vhost level
 - Implement SSL pass-through
 - Implement QUIC/HTTP3 pass-through
-- Automate deployment to Docker Hub upon release of updated PHP modules
+- Automate deployment to Docker Hub upon release of updates
 - CloudFlare True Client IP behind reverse proxy and tunnel support
 - Forward localhost ports to reverse proxied remote services, e.g. MySQL
 - Implement Bubblewrap for enhanced security
