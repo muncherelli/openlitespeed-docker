@@ -6,6 +6,12 @@ This repository hosts a user-maintained Docker image for [OpenLiteSpeed](https:/
 
 This container is intended to be a drop-in replacement for the official OpenLiteSpeed docker container. Ideal for both PHP development and production environments, it is designed to be as lightweight as possible while still providing a rich feature set for modern applications. Additional features allow for easy install and maintenance of multiple websites.
 
+## Known Issues:
+
+Upstream: Missing PHP Extensions in [LiteSpeed repository for Debian Bullseye](https://rpms.litespeedtech.com/debian/pool/main/bullseye/):
+- PHP 7.4: redis (x86_64)
+- PHP 8.0: imagick (aarch64), redis (aarch64, x86_64)
+
 ## Achievements:
 
 - Adopted Debian Slim as base image, replacing Ubuntu :white_check_mark:

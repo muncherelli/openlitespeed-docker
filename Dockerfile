@@ -1,7 +1,7 @@
 FROM docker.io/debian:bullseye-slim
 ARG OPENLITESPEED_VERSION=1.7.17
 ARG PHP_VERSION=8.2
-ARG PHP_EXTENSIONS="curl,intl,imagick,imap,mysql,opcache,pgsql,sqlite3"
+ARG PHP_EXTENSIONS="curl,intl,imagick,imap,mysql,opcache,pgsql,sqlite3,redis"
 
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
@@ -48,6 +48,19 @@ RUN apt-get update && \
     fi && \
     echo "deb http://rpms.litespeedtech.com/debian/ bullseye main" > /etc/apt/sources.list.d/lst_debian_repo.list && \
     echo "#deb http://rpms.litespeedtech.com/edge/debian/ bullseye main" >> /etc/apt/sources.list.d/lst_debian_repo.list && \
+    if [ "${PHP_EXTENSIONS: -1}" != "," ]; then \
+        PHP_EXTENSIONS="${PHP_EXTENSIONS},"; \
+    fi && \
+    if [ "$PHP_VERSION" = "7.4" ] && [ "$(uname -m)" = "x86_64" ]; then \
+        PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/redis,//g'); \
+    fi && \
+    if [ "$PHP_VERSION" = "8.0" ]; then \
+        PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/redis,//g'); \
+    fi && \
+    if [ "$PHP_VERSION" = "8.0" ] && [ "$(uname -m)" = "aarch64" ]; then \
+    PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/imagick,//g'); \
+    fi && \
+    PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/,$//') && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common $(echo $PHP_EXTENSIONS | tr ',' '\n' | while read ext; do echo -n "lsphp${PHP_VERSION//./}-$ext "; done) && \
     if [[ $PHP_VERSION == 7* ]]; then DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends lsphp${PHP_VERSION//./}-json; fi && \
