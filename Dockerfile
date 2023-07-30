@@ -58,7 +58,7 @@ RUN apt-get update && \
         PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/redis,//g'); \
     fi && \
     if [ "$PHP_VERSION" = "8.0" ] && [ "$(uname -m)" = "aarch64" ]; then \
-    PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/imagick,//g'); \
+        PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/imagick,//g'); \
     fi && \
     PHP_EXTENSIONS=$(echo $PHP_EXTENSIONS | sed 's/,$//') && \
     apt-get update && \
