@@ -25,7 +25,6 @@ SHELL ["/bin/bash", "-c"]
 # - Sets the PHP version in the OpenLiteSpeed installation script
 # - Navigates to the '/tmp/openlitespeed-release' directory and runs the install script to install OpenLiteSpeed
 # - Removes the '/tmp/openlitespeed-release' directory after installation is completed
-# - Writes 'cloud-docker' to the file '/usr/local/lsws/PLAT'
 # - Downloads GPG keys for the LiteSpeed repositories and adds them to trusted sources
 # - Removes existing LiteSpeed repository from the sources list if exists, then adds new LiteSpeed repositories to the sources list
 # - If 'PHP_EXTENSIONS' variable doesn't end with a comma, appends a comma at the end
@@ -49,7 +48,6 @@ RUN apt-get update && \
     cd /tmp/openlitespeed-release && \
     ./install.sh && \
     rm -rf /tmp/openlitespeed-release && \
-    echo 'cloud-docker' > /usr/local/lsws/PLAT && \
     wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg; \
     wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg; \
     if [ -e /etc/apt/sources.list.d/lst_debian_repo.list ]; then \
@@ -78,6 +76,7 @@ RUN apt-get update && \
     rm -rf /usr/local/lsws/conf/templates/*
 
 # Add configuration files
+ADD openlitespeed/PLAT /usr/local/lsws/PLAT
 ADD openlitespeed/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
 ADD openlitespeed/conf/httpd_config.conf /usr/local/lsws/conf/httpd_config.conf
 ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
