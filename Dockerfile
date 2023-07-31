@@ -16,30 +16,31 @@ SHELL ["/bin/bash", "-c"]
 
 ##
 # Install Openlitespeed:
-# - Install necessary system dependencies
-# - Install architecture-specific dependencies
-# - Download and extract openlitespeed release from the specified URL
-# - Adjust openlitespeed installer configuration for PHP version
-# - Install openlitespeed
-# - Remove openlitespeed release files from /tmp
-# - Write 'cloud-docker' to /usr/local/lsws/PLAT
-#
-# Set Up LiteSpeed Repository and Install PHP Modules:
-# - Download and save GPG keys for LiteSpeed repositories
-# - Add LiteSpeed repositories to the sources list
-# - Remove 'json' from PHP_MODULES if PHP version isn't 7.x
-# - Install the required PHP version and its common modules
-# - Install additional PHP modules specified in $PHP_MODULES
-# - Clean apt cache and remove temporary files
-#
-# Download and Set Up lsup.sh Script:
-# - Download lsup.sh script from GitHub and save it to /usr/local/lsws/admin/misc
-# - Make the downloaded script executable
+# - Update the list of available packages and dependencies using 'apt-get update'
+# - Install required dependencies using 'apt-get install'. These dependencies include ca-certificates, wget, curl, cron, tzdata, and procps. 
+# - Check for the system's architecture. If it is "aarch64", then it installs the 'libatomic1' package.
+# - Create a directory '/tmp/openlitespeed-release' for storing OpenLiteSpeed release files
+# - Download and extract OpenLiteSpeed release file from the URL and extract it into '/tmp/openlitespeed-release' directory
+# - If PHP version isn't 7.x, it adjusts the openlitespeed installer configuration to not use 'lsphp7'
+# - Sets the PHP version in the OpenLiteSpeed installation script
+# - Navigates to the '/tmp/openlitespeed-release' directory and runs the install script to install OpenLiteSpeed
+# - Removes the '/tmp/openlitespeed-release' directory after installation is completed
+# - Writes 'cloud-docker' to the file '/usr/local/lsws/PLAT'
+# - Downloads GPG keys for the LiteSpeed repositories and adds them to trusted sources
+# - Removes existing LiteSpeed repository from the sources list if exists, then adds new LiteSpeed repositories to the sources list
+# - If 'PHP_EXTENSIONS' variable doesn't end with a comma, appends a comma at the end
+# - Adjusts the 'PHP_EXTENSIONS' variable based on the PHP version and system architecture
+# - Updates the list of available packages and dependencies again
+# - Installs the specified version of PHP, its common modules, and additional PHP modules specified in '$PHP_EXTENSIONS' 
+# - If PHP version is 7.x, it also installs 'lsphpXX-json'
+# - Cleans the apt cache and removes temporary files
+# - Downloads 'lsup.sh' script from GitHub and saves it to '/usr/local/lsws/admin/misc'. It then makes this script executable
+# - Removes all existing templates in '/usr/local/lsws/conf/templates' directory
 ##
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget curl cron tzdata procps && \
     if [ $(uname -m) = "aarch64" ]; then \
-        apt-get install -y libatomic1; \
+        DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libatomic1; \
     fi && \
     mkdir -p /tmp/openlitespeed-release && \
     wget -qO- https://github.com/litespeedtech/openlitespeed/releases/download/v${OPENLITESPEED_VERSION}/openlitespeed-${OPENLITESPEED_VERSION}-$(uname -m)-linux.tgz | tar xvz -C /tmp/openlitespeed-release --strip-components=1 && \
@@ -72,10 +73,8 @@ RUN apt-get update && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends default-mysql-client lsphp${PHP_VERSION//./} lsphp${PHP_VERSION//./}-common $(echo $PHP_EXTENSIONS | tr ',' '\n' | while read ext; do echo -n "lsphp${PHP_VERSION//./}-$ext "; done) && \
     if [[ $PHP_VERSION == 7* ]]; then DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends lsphp${PHP_VERSION//./}-json; fi && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    wget -O /usr/local/lsws/admin/misc/lsup.sh https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh && \
-    chmod +x /usr/local/lsws/admin/misc/lsup.sh && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    wget -O /usr/local/lsws/admin/misc/lsup.sh https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh && chmod +x /usr/local/lsws/admin/misc/lsup.sh && \
     rm -rf /usr/local/lsws/conf/templates/*
 
 # Add configuration files
@@ -85,21 +84,22 @@ ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/dock
 
 ##
 # Set Up Openlitespeed
-# - set permissions on conf files
-# - create default vhost docroot
-# - set permissions on docroot
-# - remove example site files
-# - remove default listener
-# - symlink lsphp to lsphp${PHP_VERSION//./}
-# - symlink newly created lsphp${PHP_VERSION//./} to lsphp in fcgi-bin
-# - symlink php binary to /usr/bin/php
-# - create empty vhosts.env file
+# - Sets permissions on the OpenLiteSpeed configuration directory '/usr/local/lsws/conf' and all its content to user with user ID 999 and group ID 999
+# - Creates a default vhost document root directory '/var/www/vhosts/_default/public'
+# - Sets permissions on the '/var/www/vhosts/_default/' directory and all its content to user with user ID 1000 and group ID 1000
+# - Removes the OpenLiteSpeed example site files located in '/usr/local/lsws/Example'
+# - Removes the 'virtualHost Example' and 'listener Default' blocks from the OpenLiteSpeed HTTPD configuration file '/usr/local/lsws/conf/httpd_config.conf'
+# - Copies the '/usr/local/lsws/conf/' directory and all its contents to '/usr/local/lsws/.conf/'
+# - Copies the '/usr/local/lsws/admin/conf' directory and all its contents to '/usr/local/lsws/admin/.conf/'
+# - Creates a symbolic link between the 'lsphp' binary in the PHP version specific directory and a new 'lsphp' binary in the 'fcgi-bin' directory
+# - Creates a symbolic link between the newly created 'lsphp' binary in 'fcgi-bin' directory and the 'lsphp' binary in the same directory
+# - Creates a symbolic link between the 'php' binary in the PHP version specific directory and the 'php' binary in '/usr/bin' directory
+# - Creates an empty 'vhosts.env' file in the '/usr/local/lsws/conf' directory
 ##
 RUN chown 999:999 /usr/local/lsws/conf -R && \
     mkdir -p /var/www/vhosts/_default/public && \
     chown 1000:1000 /var/www/vhosts/_default/ -R && \
     rm -rf /usr/local/lsws/Example && \
-    sed -i -e '/virtualHost Example{/,/}/d' -e '/listener Default{/,/}/d' /usr/local/lsws/conf/httpd_config.conf && \
     cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/ && \
     cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/ && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} && \
@@ -110,11 +110,11 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
 # Set Up Container
 EXPOSE 7080 80
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
-# do not modify php_version here, this is only to pass the value to entrypoint.sh
+
+# do not modify php_version here, this is only set to pass the ARG value over to entrypoint.sh
 ENV PHP_VERSION=${PHP_VERSION}
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-
 
 WORKDIR /var/www/vhosts/
