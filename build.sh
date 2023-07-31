@@ -25,7 +25,6 @@ done
 
 # Ensure OPENLITESPEED_VERSION and PHP_VERSION arguments are passed
 if [ -z "$OPENLITESPEED_VERSION" ] || [ -z "$PHP_VERSION" ]; then
-    echo "Two arguments required: -o|--ols OPENLITESPEED_VERSION and -p|--php PHP_VERSION"
     usage
 fi
 
