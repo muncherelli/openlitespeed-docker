@@ -39,7 +39,7 @@ TAG="${OPENLITESPEED_VERSION}-php${PHP_VERSION}"
 
 # Build the Docker image
 echo "Building Docker image..."
-if docker build -t ${REPO_OWNER}/openlitespeed:$TAG --build-arg OPENLITESPEED_VERSION=$OPENLITESPEED_VERSION --build-arg PHP_VERSION=$PHP_VERSION . ; then
+if docker build --no-cache -t ${REPO_OWNER}/openlitespeed:$TAG --build-arg OPENLITESPEED_VERSION=$OPENLITESPEED_VERSION --build-arg PHP_VERSION=$PHP_VERSION . ; then
     echo "Docker image built successfully."
 else
     echo "Failed to build Docker image."
