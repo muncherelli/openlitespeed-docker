@@ -4,7 +4,7 @@ REPO_OWNER="muncherelli"
 
 # Function to display usage information
 usage() {
-    echo "Usage: $0 -o|--ols OPENLITESPEED_VERSION -p|--php PHP_VERSION -r|--repo REPO_OWNER"
+    echo "Usage: $0 -o|--ols OPENLITESPEED_VERSION -p|--php PHP_VERSION"
     exit 1
 }
 
@@ -19,18 +19,14 @@ while (( "$#" )); do
       PHP_VERSION=$2
       shift 2
       ;;
-    -r|--repo)
-      REPO_OWNER=$2
-      shift 2
-      ;;
     *)
       usage
       ;;
   esac
 done
 
-# Ensure OPENLITESPEED_VERSION, PHP_VERSION, and REPO_OWNER arguments are passed
-if [ -z "$OPENLITESPEED_VERSION" ] || [ -z "$PHP_VERSION" ] || [ -z "$REPO_OWNER" ]; then
+# Ensure OPENLITESPEED_VERSION and PHP_VERSION arguments are passed
+if [ -z "$OPENLITESPEED_VERSION" ] || [ -z "$PHP_VERSION" ]; then
     usage
 fi
 
