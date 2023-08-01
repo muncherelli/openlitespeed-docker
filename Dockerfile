@@ -96,8 +96,8 @@ ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/dock
 # - Creates an empty 'vhosts.env' file in the '/usr/local/lsws/conf' directory
 ##
 RUN chown 999:999 /usr/local/lsws/conf -R && \
-    mkdir -p /var/www/vhosts/_default/public && \
-    chown 1000:1000 /var/www/vhosts/_default/ -R && \
+    mkdir -p /var/www/vhosts/localhost/public && \
+    chown 1000:1000 /var/www/vhosts/localhost/ -R && \
     rm -rf /usr/local/lsws/Example && \
     cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/ && \
     cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/ && \
