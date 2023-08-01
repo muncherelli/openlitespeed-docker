@@ -26,7 +26,7 @@ Upstream: Missing PHP Extensions in [LiteSpeed repository for Debian Bullseye](h
 - Add separate build with support for Microsoft SQL Server (sqlsrv PHP module)
 - Provide comprehensive instructions for building and running the container
 
-## Future Roadmap:
+## Wish List:
 
 - Detect .htaccess changes and apply automatically
 - Improve control over default website and error pages at webserver and vhost level
