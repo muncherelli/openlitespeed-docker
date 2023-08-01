@@ -16,7 +16,7 @@ Upstream: Missing PHP Extensions in [LiteSpeed repository for Debian Bullseye](h
 
 - Adopted Debian Slim as base image, replacing Ubuntu :white_check_mark:
 - Container supports native execution on x86_64 and aarch64 (Apple Silicon, Raspberry Pi) :white_check_mark:
-- Easy to use `PHP_VERSION` and `PHP_MODULES` ARGS for custom builds :white_check_mark:
+- `PHP_EXTENSIONS` ARG for custom builds :white_check_mark:
 - Allow easy setup for multi-tenant web hosting :white_check_mark:
 - Launch on Docker Hub :white_check_mark:
 
