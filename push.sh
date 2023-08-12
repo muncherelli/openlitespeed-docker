@@ -43,6 +43,6 @@ docker buildx create --use
 
 # Build and push the Docker image
 echo "Building and pushing Docker image..."
-docker buildx build --platform linux/amd64,linux/arm64 --push -t $DOCKERHUB_IMAGE_NAME --build-arg OPENLITESPEED_VERSION=$OPENLITESPEED_VERSION --build-arg PHP_VERSION=$PHP_VERSION .
+docker buildx build --platform linux/amd64,linux/arm64 --push -f docker/Dockerfile -t $DOCKERHUB_IMAGE_NAME --build-arg OPENLITESPEED_VERSION=$OPENLITESPEED_VERSION --build-arg PHP_VERSION=$PHP_VERSION .
 
 echo "Done."
