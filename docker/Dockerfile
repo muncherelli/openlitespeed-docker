@@ -76,10 +76,10 @@ RUN apt-get update && \
     rm -rf /usr/local/lsws/conf/templates/*
 
 # Add configuration files
-ADD openlitespeed/PLAT /usr/local/lsws/PLAT
-ADD openlitespeed/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
-ADD openlitespeed/conf/httpd_config.conf /usr/local/lsws/conf/httpd_config.conf
-ADD openlitespeed/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
+ADD lsws/PLAT /usr/local/lsws/PLAT
+ADD lsws/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
+ADD lsws/conf/httpd_config.conf /usr/local/lsws/conf/httpd_config.conf
+ADD lsws/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
 
 ##
 # Set Up Openlitespeed
@@ -112,7 +112,7 @@ ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
 # do not modify php_version here, this is only set to pass the ARG value over to entrypoint.sh
 ENV PHP_VERSION=${PHP_VERSION}
-COPY entrypoint.sh /entrypoint.sh
+COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
