@@ -94,7 +94,8 @@ ADD lsws/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
 # - Creates a symbolic link between the 'lsphp' binary in the PHP version specific directory and a new 'lsphp' binary in the 'fcgi-bin' directory
 # - Creates a symbolic link between the newly created 'lsphp' binary in 'fcgi-bin' directory and the 'lsphp' binary in the same directory
 # - Creates a symbolic link between the 'php' binary in the PHP version specific directory and the 'php' binary in '/usr/bin' directory
-# - Creates an empty 'vhosts.env' file in the '/usr/local/lsws/conf' directory
+# - Creates a symbolic link between the 'phpize' binary in the PHP version specific directory and the 'phpize' binary in '/usr/bin' directory
+# - Creates a symbolic link between the 'php-config' binary in the PHP version specific directory and the 'php-config' binary in '/usr/bin' directory
 ##
 RUN chown 999:999 /usr/local/lsws/conf -R && \
     mkdir -p /var/www/vhosts/localhost/public && \
@@ -105,10 +106,22 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} && \
     ln -sf /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} /usr/local/lsws/fcgi-bin/lsphp && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php && \
-    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/phpize /usr/bin/phpize
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/phpize /usr/bin/phpize && \
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php-config /usr/bin/php-config
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install PECL extensions
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential lsphp${PHP_VERSION//./}-dev lsphp${PHP_VERSION//./}-pear unixodbc-dev && \
+    /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/pecl install sqlsrv && \
+    /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/pecl install pdo_sqlsrv && \
+    PHP_INI="/usr/local/lsws/lsphp${PHP_VERSION//./}/etc/php/${PHP_VERSION}/litespeed/php.ini" && \
+    echo "extension=sqlsrv.so" >> "$PHP_INI" && \
+    echo "extension=pdo_sqlsrv.so" >> "$PHP_INI" && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set Up Container
 EXPOSE 7080 80
@@ -121,3 +134,4 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 WORKDIR /var/www/vhosts/
+

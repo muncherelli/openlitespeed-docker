@@ -63,17 +63,8 @@ function process_vhosts {
     check_server_and_restart
 }
 
-
-# Monitor for changes in VHOSTS
-OPENLITESPEED_VHOSTS_ENV_LAST_HASH=""
-while true; do
-    OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH=$(cat /usr/local/lsws/conf/vhosts.env | md5sum | cut -d " " -f1)
-    if [ "$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH" != "$OPENLITESPEED_VHOSTS_ENV_LAST_HASH" ]; then
-        process_vhosts
-        OPENLITESPEED_VHOSTS_ENV_LAST_HASH=$OPENLITESPEED_VHOSTS_ENV_CURRENT_HASH
-    fi
-    sleep 5
-done &
+# Call process_vhosts function here to set vhosts if provided
+process_vhosts
 
 /usr/local/lsws/bin/lswsctrl start
 $@
