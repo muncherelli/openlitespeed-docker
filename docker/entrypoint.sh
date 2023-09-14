@@ -43,9 +43,6 @@ function check_server_and_restart {
 
 # Function to process vhosts
 function process_vhosts {
-    VHOSTS=$(cat /usr/local/lsws/conf/vhosts.env)
-    
-    # Check if VHOSTS is empty, if so, skip the following steps
     if [ -z "$VHOSTS" ]; then
         return
     fi
@@ -65,6 +62,7 @@ function process_vhosts {
     # Call function to check server status and restart
     check_server_and_restart
 }
+
 
 # Monitor for changes in VHOSTS
 OPENLITESPEED_VHOSTS_ENV_LAST_HASH=""

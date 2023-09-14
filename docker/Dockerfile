@@ -10,6 +10,7 @@ ENV PHP_UPLOAD_MAX_FILESIZE=128M
 ENV PHP_MAX_INPUT_TIME=300
 ENV PHP_MAX_EXECUTION_TIME=300
 ENV PHP_MAX_INPUT_VARS=2500
+ENV VHOSTS=
 
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
@@ -104,8 +105,7 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} && \
     ln -sf /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} /usr/local/lsws/fcgi-bin/lsphp && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php && \
-    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/phpize /usr/bin/phpize && \
-    touch /usr/local/lsws/conf/vhosts.env
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/phpize /usr/bin/phpize
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
