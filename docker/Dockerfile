@@ -81,9 +81,6 @@ ADD lsws/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
 ADD lsws/conf/httpd_config.conf /usr/local/lsws/conf/httpd_config.conf
 ADD lsws/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 ##
 # Set Up Openlitespeed
 # - Sets permissions on the OpenLiteSpeed configuration directory '/usr/local/lsws/conf' and all its content to user with user ID 999 and group ID 999
@@ -108,6 +105,9 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
     ln -sf /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} /usr/local/lsws/fcgi-bin/lsphp && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php && \
     touch /usr/local/lsws/conf/vhosts.env
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set Up Container
 EXPOSE 7080 80
