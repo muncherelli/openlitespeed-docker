@@ -37,7 +37,7 @@ SHELL ["/bin/bash", "-c"]
 # - Removes all existing templates in '/usr/local/lsws/conf/templates' directory
 ##
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget curl cron tzdata procps && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget curl cron tzdata procps zip unzip && \
     if [ $(uname -m) = "aarch64" ]; then \
         DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libatomic1; \
     fi && \
@@ -81,6 +81,9 @@ ADD lsws/admin/conf/htpasswd /usr/local/lsws/admin/conf/htpasswd
 ADD lsws/conf/httpd_config.conf /usr/local/lsws/conf/httpd_config.conf
 ADD lsws/conf/templates/docker.conf /usr/local/lsws/conf/templates/docker.conf
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 ##
 # Set Up Openlitespeed
 # - Sets permissions on the OpenLiteSpeed configuration directory '/usr/local/lsws/conf' and all its content to user with user ID 999 and group ID 999
@@ -110,7 +113,7 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
 EXPOSE 7080 80
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
-# do not modify php_version here, this is only set to pass the ARG value over to entrypoint.sh
+# This is not to override the PHP version. Simply passes the ARG value over to entrypoint.sh
 ENV PHP_VERSION=${PHP_VERSION}
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
