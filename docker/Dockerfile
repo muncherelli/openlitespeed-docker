@@ -104,6 +104,7 @@ RUN chown 999:999 /usr/local/lsws/conf -R && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} && \
     ln -sf /usr/local/lsws/fcgi-bin/lsphp${PHP_VERSION//./} /usr/local/lsws/fcgi-bin/lsphp && \
     ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/php /usr/bin/php && \
+    ln -sf /usr/local/lsws/lsphp${PHP_VERSION//./}/bin/phpize /usr/bin/phpize && \
     touch /usr/local/lsws/conf/vhosts.env
 
 # Install Composer
